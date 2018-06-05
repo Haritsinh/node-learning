@@ -1,0 +1,11 @@
+{
+    "name": "Node_practice", "description": "", "version": "0.0.1", "main": "./Node_practice.js", "author": {
+        "name": "Harit", "email": "555hareet@gmail.com"
+    }, "keywords": [], "licenses": "none", "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    }, "repository": {
+        "type": "git", "url": "git://github.com/YOUR_LOGIN/Node_practice.git"
+    }, "bugs": {
+        "url": "http://github.com/YOUR_LOGIN/Node_practice/issues"
+    }
+}

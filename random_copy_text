@@ -1,0 +1,31 @@
+//past_doseis.php page
+SELECT p.id,p.date,p.amount,p.customer_id payout_customer_id,c.customer_name, cl.id collection_id, cl.customer_id coll_customer,c.customer_id,cl.date coll_date,
+                                    concat(ud.first_name," ",ud.last_name) fullname FROM  as_user_details ud
+                                    LEFT JOIN collection cl ON(cl.owner_id = ud.user_id)
+                                    LEFT JOIN  payout p ON(p.owner_id = ud.user_id)
+                                    LEFT JOIN p_customers c ON(p.customer_id = c.customer_id and cl.customer_id = c.customer_id)
+                                    WHERE  p.owner_id in (12,40,41,42,43,44,45,46,47,53,54,55,57,58,59,60,61,62,63,64,65,66,67,68,72,73,74,75,79,81,82,83,84,85,86,87,88,90,3) and cl.owner_id in (12,40,41,42,43,44,45,46,47,53,54,55,57,58,59,60,61,62,63,64,65,66,67,68,72,73,74,75,79,81,82,83,84,85,86,87,88,90,3) and cl.date <= CURRENT_DATE and p.date <= CURRENT_DATE  ORDER BY p.date
+                                    
+SELECT concat(ud.first_name," ",ud.last_name) fullname,t.collection_owner,t.payout_owner,
+                                        SUM(t.collection_amount) collection_amount,SUM(t.r_amount) remaining_amount, SUM(t.payout_amount) payout_amount
+                                    FROM
+                                        (
+                                        SELECT u.user_id,u.username,u.user_role,u.parent,c.owner_id collection_owner,'payout_owner',SUM(cp.paid_amount) collection_amount,
+                                            SUM(op.remaining_amount) r_amount,0 payout_amount
+                                        FROM
+                                            as_users u
+                                        LEFT JOIN collection c ON u.user_id = c.owner_id
+                                        LEFT JOIN collection_product cp ON c.id = cp.collection_id
+                                        LEFT JOIN p_order_product op ON cp.order_product_id = op.order_product_id
+                                        where cl.owner_id in (12,40,41,42,43,44,45,46,47,53,54,55,57,58,59,60,61,62,63,64,65,66,67,68,72,73,74,75,79,81,82,83,84,85,86,87,88,90,3) and cl.date <= CURRENT_DATE
+                                        GROUP BY u.user_id
+                                        UNION
+                                        SELECT u.user_id,u.username,u.user_role,u.parent,'collection_owner', p.owner_id payout_owner,
+                                            0 collection_amount,0 r_amount, SUM(p.amount) payout_amount
+                                        FROM as_users u
+                                        LEFT JOIN payout p ON u.user_id = p.owner_id
+                                        where p.owner_id in (12,40,41,42,43,44,45,46,47,53,54,55,57,58,59,60,61,62,63,64,65,66,67,68,72,73,74,75,79,81,82,83,84,85,86,87,88,90,3) and p.date <= CURRENT_DATE
+                                        GROUP BY u.user_id
+                                    ) t 
+                                    LEFT JOIN as_user_details ud ON t.user_id = ud.user_id                                   
+                                     order by 
